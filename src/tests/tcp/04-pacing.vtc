@@ -1,0 +1,24 @@
+varnishtest "Test enabling pacing"
+
+feature cmd "uname | grep Linux"
+
+server s1 {
+       rxreq
+       txresp
+} -start
+
+varnish v1 -vcl+backend {
+	import tcp from "${vmod_builddir}/.libs/libvmod_tcp.so";
+
+	sub vcl_deliver {
+		tcp.set_socket_pace(1000);
+	}
+} -start
+
+client c1 {
+	txreq -url "/"
+	rxresp
+	expect resp.status == 200
+}
+
+client c1 -run
