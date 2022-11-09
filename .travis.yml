@@ -1,0 +1,24 @@
+---
+sudo: required
+dist: trusty
+
+language: c
+
+before_install:
+  - sudo apt-get update -q
+  - sudo apt-get install -qq apt-transport-https python-docutils
+  - curl -s https://packagecloud.io/install/repositories/varnishcache/varnish41/script.deb.sh | sudo bash
+  - sudo apt-get -q update
+  - sudo apt-get install varnish varnish-dev
+
+before_script:
+  - ./bootstrap
+  - ./configure --prefix=/usr
+  - make -j4
+
+script:
+  - make distcheck -j4
+
+compiler:
+  - clang
+  - gcc

@@ -1,0 +1,54 @@
+varnishtest "Test var vmod"
+
+server s1 {
+       rxreq
+       expect req.http.be-notused == "dummy"
+       expect req.http.be-used == "s1"
+       txresp
+} -start
+
+varnish v1 -vcl+backend {
+	import var from "${vmod_builddir}/.libs/libvmod_var.so";
+
+	backend dummy { .host = "${bad_ip}"; .port = "1234"; }
+
+	sub vcl_backend_fetch {
+		var.set_backend("be1", s1);
+		set bereq.backend = dummy;
+		set bereq.http.be-notused = bereq.backend;
+		set bereq.backend = var.get_backend("be1");
+		set bereq.http.be-used = bereq.backend;
+	}
+	sub vcl_deliver {
+		var.set("foo", "bar");
+		set resp.http.x-foo = var.get("foo");
+		var.set("foo2", "bar2");
+		set resp.http.x-foo = var.get("foo");
+		var.clear();
+		set resp.http.x-foo2 = "" + var.get("foo2");
+		var.set_int("i1", 123);
+		set resp.http.i1 = var.get_int("i1") + 1;
+		var.set_real("r1", 2);
+		var.set_real("r1", var.get_real("r1"));
+		set resp.http.r1 = var.get_real("r1");
+
+		var.set_duration("d1", 1m);
+		set resp.http.d1 = var.get_duration("d1");
+
+		var.set_ip("ip1", client.ip);
+		set resp.http.ip1 = var.get_ip("ip1");
+	}
+} -start
+
+client c1 {
+	txreq -url "/"
+	rxresp
+	expect resp.http.x-foo == "bar"
+	expect resp.http.x-foo2 == ""
+	expect resp.http.i1 == "124"
+	expect resp.http.r1 == "2.000"
+	expect resp.http.d1 == "60.000"
+	expect resp.http.ip1 == "127.0.0.1"
+}
+
+client c1 -run

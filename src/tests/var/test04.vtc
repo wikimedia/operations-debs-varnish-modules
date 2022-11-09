@@ -1,0 +1,43 @@
+varnishtest "Test vcl reload"
+
+barrier b1 cond 2
+
+server s1 {
+       rxreq
+       barrier b1 sync
+       txresp
+} -start
+
+varnish v1 -vcl+backend {
+	import var from "${vmod_builddir}/.libs/libvmod_var.so";
+
+	sub vcl_recv {
+		var.set("foo", "bar");
+	}
+
+	sub vcl_deliver {
+		set resp.http.x-foo = var.get("foo");
+	}
+} -start
+
+client c1 {
+	txreq -url "/"
+	rxresp
+	expect resp.http.x-foo == "bar"
+} -start
+
+varnish v1 -vcl+backend {
+	import var from "${vmod_builddir}/.libs/libvmod_var.so";
+
+	sub vcl_recv {
+		var.set("foo", "bar");
+	}
+
+	sub vcl_deliver {
+		set resp.http.x-foo = var.get("foo");
+	}
+}
+
+barrier b1 sync
+
+client c1 -wait
