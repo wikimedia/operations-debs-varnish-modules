@@ -1,0 +1,34 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+# export DH_VERBOSE = 1
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+P := \)
+
+# Extract varnish ABI "strict" version
+VARNISHD_ABI_STRICT = $(shell \
+  varnishd -V 2>&1 | \
+  grep revision | \
+  cut -d ' ' -f 4 | \
+  tr -d '$(P)')
+
+export VARNISHAPI_DATAROOTDIR = $(shell pkg-config varnishapi --variable=datarootdir)
+
+%:
+	dh $@
+
+override_dh_auto_install:
+	dh_auto_install
+	# Empty dependency_libs field in .la files (c.f. Policy 10.2).
+	sed -i "/dependency_libs/ s/'.*'/''/" `find $(installdir) -name '*.la'`
+
+override_dh_auto_test:
+	LD_PRELOAD=libnss_wrapper.so NSS_WRAPPER_HOSTS=../debian/varnishtest_nss_wrapper_hosts make check
+
+override_dh_gencontrol:
+	echo "Varnish:ABI=varnishabi-strict-$(VARNISHD_ABI_STRICT)" >> debian/varnish-modules.substvars
+	dh_gencontrol

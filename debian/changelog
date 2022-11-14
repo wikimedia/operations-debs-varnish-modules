@@ -1,0 +1,104 @@
+varnish-modules (0.15.0-2) bullseye-wikimedia; urgency=medium
+
+  * Bump version and target distribution to bullseye (Bug: T321309)
+  * Set debhelper compat level to 13 and update debian/rules
+  * Deprecate debian/compat file and use debhelper-compat in debian/control
+  * Add Sukhbir Singh to the package maintainers list
+  * Create operations/debs/varnish-modules to put package in Git
+
+ -- Sukhbir Singh <ssingh@wikimedia.org>  Fri, 11 Nov 2022 10:48:25 -0500
+
+varnish-modules (0.15.0-1+wmf1) buster-wikimedia; urgency=medium
+
+  * Target Varnish 6.0.x by build-depending on 6.0.0 < x < 6.1.0
+  * Drop the following patches:
+    - 0003-update-for-master-a11939eb64427847ec11571d328696ba16.patch
+    - 0005-changes-required-for-latest-varnish-cache.patch
+    - 0006-reflect-latest-changes-to-the-director-API.patch
+  * Fix varnishd VRT version extraction
+
+ -- Emanuele Rocca <ema@wikimedia.org>  Mon, 31 Aug 2020 09:37:17 +0000
+
+varnish-modules (0.15.0-1) unstable; urgency=medium
+
+  * Imported upstream release 0.15.0 (Closes: #910630)
+    * Remove vmod "softpurge", no longer supported upstream.
+    * Add vmods "bodyaccess" and "var".
+  * Update packaging maintainer address (Closes: #899821)
+  * Declare compliance with Debian policy 4.1.0
+  * Import patches for 32bit and new ABI
+  * Refresh existing patches
+  * Update Vcs-* urls
+
+ -- Stig Sandbeck Mathisen <ssm@debian.org>  Mon, 24 Dec 2018 10:51:29 +0100
+
+varnish-modules (0.12.1-1) unstable; urgency=medium
+
+  * New upstream release (Closes: #853696)
+  * Drop patch to support Varnish 5.0.0, included upstream
+  * Set versioned build-dep on varnish/libvarnishapi-dev to 5.0.0
+  * Empty dependency_libs field in .la files (c.f. Policy 10.2).
+  * Declare compliance with Debian policy 4.1.0
+  * Update debian/watch to follow upstream's new release tags naming
+    convention
+
+ -- Emanuele Rocca <ema@debian.org>  Wed, 04 Oct 2017 12:53:39 +0200
+
+varnish-modules (0.9.1-4) unstable; urgency=medium
+
+  * Add patch to support Varnish 5.0.0.
+    Thanks to Dridi Boukelmoune (Closes: #838114)
+  * Add hardening rules
+  * Support DEB_BUILD_OPTIONS=nocheck
+  * Install man pages
+
+ -- Stig Sandbeck Mathisen <ssm@debian.org>  Tue, 20 Sep 2016 14:35:35 +0200
+
+varnish-modules (0.9.1-3) unstable; urgency=medium
+
+  * 0001-no-cookie-overflow-test.patch: tests/cookie/08-overflow.vtc fails on
+    32-bit arches. Do not expect insanely long cookie names to be supported.
+
+ -- Emanuele Rocca <ema@debian.org>  Fri, 22 Jul 2016 10:52:11 +0200
+
+varnish-modules (0.9.1-2) unstable; urgency=medium
+
+  * varnishtest attempts to resolve phk.freebsd.dk to assess whether DNS
+    resolution works. As network access during a build is against Debian
+    Policy 4.9, use libnss-wrapper to avoid actual DNS requests in
+    dh_auto_test (Closes: #830843)
+
+ -- Emanuele Rocca <ema@debian.org>  Thu, 14 Jul 2016 10:11:27 +0200
+
+varnish-modules (0.9.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Add versioned build-depend on varnish >= 4.1.3
+  * Bump versioned build-depend on libvarnishapi1
+  * Drop 0001-Use-a-size_t-format-string-for-value-from-strlen.patch
+  * Add myself to the Uploaders field
+
+ -- Emanuele Rocca <ema@debian.org>  Thu, 07 Jul 2016 17:27:59 +0200
+
+varnish-modules (0.9.0-3) unstable; urgency=medium
+
+  * Declare compliance with Debian policy 3.9.8
+  * autopkgtest with serverspec
+
+ -- Stig Sandbeck Mathisen <ssm@debian.org>  Mon, 23 May 2016 23:31:01 +0200
+
+varnish-modules (0.9.0-2) unstable; urgency=medium
+
+  * [52c0d1e] Set team as maintainer
+  * [1243692] Add Vcs-* URLs
+  * [20b6824] Let "cme" fix things
+  * [4513868] Import format string patch.
+    Thanks to Aaron M. Ucko (Closes: #817169)
+
+ -- Stig Sandbeck Mathisen <ssm@debian.org>  Tue, 08 Mar 2016 20:16:00 +0100
+
+varnish-modules (0.9.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #816846)
+
+ -- Stig Sandbeck Mathisen <ssm@debian.org>  Sun, 06 Mar 2016 10:47:30 +0100

@@ -1,0 +1,21 @@
+From: Nils Goroll <nils.goroll@uplex.de>
+Date: Thu, 26 Apr 2018 14:50:30 +0200
+Subject: Output the health state as baseline information
+
+---
+ src/tests/saintmode/test02.vtc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/tests/saintmode/test02.vtc b/src/tests/saintmode/test02.vtc
+index aa97734..bd8b537 100644
+--- a/src/tests/saintmode/test02.vtc
++++ b/src/tests/saintmode/test02.vtc
+@@ -51,6 +51,8 @@ varnish v1 -vcl+backend {
+ 
+ } -start
+ 
++varnish v1 -cliok "backend.list"
++
+ client c1 {
+ 	txreq -url "/a"
+ 	rxresp
